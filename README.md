@@ -5,7 +5,7 @@ Repository for OpenGL school work from University Gustave Eiffel (formerly Unive
 
 - Implémentation de l'éclairage ponctuelle sur le modèle de Blinn-Phong
 - Ajout d'un module permettant de créer des cylindres
-- Implentation des commandes interactives mentionnées ci-dessous
+- Implémentation des commandes interactives mentionnées ci-dessous
 - Ajout de textures (à venir)
 - Assemblage de la scène
 
