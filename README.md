@@ -11,6 +11,6 @@ Repository for OpenGL school work from University Gustave Eiffel (formerly Unive
 
 ### Commandes
 
-'l' pour faire tourner la lumière autour de l'avatar
+'L' pour faire tourner la lumière autour de l'avatar
 
-'c' pour faire tourner la caméra autour de l'avatar
+'C' pour faire tourner la caméra autour de l'avatar
