@@ -7,6 +7,8 @@ Repository for OpenGL school work from University Gustave Eiffel (formerly Unive
 - Ajout d'un module permettant de créer des cylindres
 - Implentation des commandes interactives mentionnées ci-dessous
 - Ajout de textures (à venir)
+- Assemblage de la scène
 
 'l' pour faire tourner la lumière autour de l'avatar
+
 'c' pour faire tourner la caméra autour de l'avatar
