@@ -6,8 +6,10 @@ Repository for OpenGL school work from University Gustave Eiffel (formerly Unive
 - Implémentation de l'éclairage ponctuelle sur le modèle de Blinn-Phong
 - Ajout d'un module permettant de créer des cylindres
 - Implémentation des commandes interactives mentionnées ci-dessous
-- Ajout de textures (à venir)
+- Ajout de textures
 - Assemblage de la scène
+
+### Commandes
 
 'l' pour faire tourner la lumière autour de l'avatar
 
