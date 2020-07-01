@@ -13,6 +13,8 @@ uniform float uShininess;
 uniform vec3 uLightPos_vs;
 uniform vec3 uLightIntensity;
 
+uniform sampler2D uTexture;
+
 out vec3 fFragColor;
 
 vec3 blinnPhong() {
@@ -24,7 +26,7 @@ vec3 blinnPhong() {
 
 	vec3
 		Li = normalize(uLightIntensity / (d * d)),
-		kd = normalize(uKd),
+		kd = normalize(uKd) + vec3(texture(uTexture, vTexCoords)),
 		ks = normalize(uKs);
 	vec3 halfVector = 0.5 * (w0 + wi);
 	return Li * (kd * dot(wi, N) + ks * pow(dot(halfVector, N) , uShininess));

@@ -1,4 +1,5 @@
 #include <glimac/FilePath.hpp>
+#include <glimac/Image.hpp>
 #include <glimac/Program.hpp>
 #include <glimac/SDLWindowManager.hpp>
 #include <glimac/Cylinder.hpp>
@@ -27,6 +28,17 @@ int main(int argc, char** argv) {
     Program program = loadProgram(applicationPath.dirPath() + "shaders/session2.vs.glsl", applicationPath.dirPath() + "shaders/session2.fs.glsl");
     program.use();
 
+    std::vector<std::string> texturesPaths = {"HumanSkinMap.jpg", "NapkinMap.jpg", "JeansMap.jpg"};
+    std::vector<std::unique_ptr<Image>> images(texturesPaths.size());
+
+    for(size_t i = 0; i < texturesPaths.size(); i++) {
+        images[i] = loadImage(applicationPath.dirPath() + "../../GLImac-Template/assets/textures/" + texturesPaths[i]);
+        if(images[i] == 0) {
+            std::cerr << "Loading texture " << texturesPaths[i] << " failed." << std::endl;
+            return EXIT_FAILURE;
+        }
+    }
+
     /*********************************
      * HERE SHOULD COME THE INITIALIZATION CODE
      *********************************/
@@ -54,7 +66,17 @@ int main(int argc, char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    GLint uMVPMatrix, uMVMatrix, uNormalMatrix, uKd, uKs, uShininess, uLightPos, uLightIntensity;
+    std::vector<GLuint> textos(images.size());
+    glGenTextures(textos.size(), textos.data());
+    for(size_t i = 0; i < textos.size(); i++) {
+        glBindTexture(GL_TEXTURE_2D, textos[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, images[i]->getWidth(), images[i]->getHeight(), 0, GL_RGBA, GL_FLOAT, images[i]->getPixels());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLint uMVPMatrix, uMVMatrix, uNormalMatrix, uKd, uKs, uShininess, uLightPos, uLightIntensity, uTexture;
     uMVPMatrix = glGetUniformLocation(program.getGLId(), "uMVPMatrix");
     uMVMatrix = glGetUniformLocation(program.getGLId(), "uMVMatrix");
     uNormalMatrix = glGetUniformLocation(program.getGLId(), "uNormalMatrix");
@@ -63,6 +85,7 @@ int main(int argc, char** argv) {
     uShininess = glGetUniformLocation(program.getGLId(), "uShininess");
     uLightPos = glGetUniformLocation(program.getGLId(), "uLightPos_vs");
     uLightIntensity = glGetUniformLocation(program.getGLId(), "uLightIntensity");
+    uTexture = glGetUniformLocation(program.getGLId(), "uTexture");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -132,7 +155,11 @@ int main(int argc, char** argv) {
         glUniform3fv(uKd, 1, glm::value_ptr(red));
         glUniform3fv(uKs, 1, glm::value_ptr(white));
         glUniform1f(uShininess, shininess);
+        glUniform1i(uTexture, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textos[1]);
         glDrawArrays(GL_TRIANGLES, 0, cylinder.getVertexCount());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         // Membres de l'avatar
 
@@ -148,7 +175,11 @@ int main(int argc, char** argv) {
         glUniform3fv(uKd, 1, glm::value_ptr(yellow));
         glUniform3fv(uKs, 1, glm::value_ptr(white));
         glUniform1f(uShininess, shininess);
+        glUniform1i(uTexture, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textos[0]);
         glDrawArrays(GL_TRIANGLES, 0, cylinder.getVertexCount());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         // Bras 2
         ModelMatrix = glm::rotate(glm::mat4(4), (float)-45., glm::vec3(0, 0, 1));
@@ -162,7 +193,11 @@ int main(int argc, char** argv) {
         glUniform3fv(uKd, 1, glm::value_ptr(yellow));
         glUniform3fv(uKs, 1, glm::value_ptr(white));
         glUniform1f(uShininess, shininess);
+        glUniform1i(uTexture, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textos[0]);
         glDrawArrays(GL_TRIANGLES, 0, cylinder.getVertexCount());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         // Jambes
         ModelMatrix = glm::translate(glm::mat4(4), glm::vec3(-0.25, -1, 0));
@@ -175,7 +210,11 @@ int main(int argc, char** argv) {
         glUniform3fv(uKd, 1, glm::value_ptr(blue));
         glUniform3fv(uKs, 1, glm::value_ptr(white));
         glUniform1f(uShininess, shininess);
+        glUniform1i(uTexture, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textos[2]);
         glDrawArrays(GL_TRIANGLES, 0, cylinder.getVertexCount());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         ModelMatrix = glm::translate(glm::mat4(4), glm::vec3(0.25, -1, 0));
         ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5, 0.5, 0.5));
@@ -187,7 +226,11 @@ int main(int argc, char** argv) {
         glUniform3fv(uKd, 1, glm::value_ptr(blue));
         glUniform3fv(uKs, 1, glm::value_ptr(white));
         glUniform1f(uShininess, shininess);
+        glUniform1i(uTexture, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textos[2]);
         glDrawArrays(GL_TRIANGLES, 0, cylinder.getVertexCount());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         // Tête
         ModelMatrix = glm::scale(glm::mat4(4), glm::vec3(0.75, 0.75, 0.75));
@@ -200,7 +243,11 @@ int main(int argc, char** argv) {
         glUniform3fv(uKd, 1, glm::value_ptr(yellow));
         glUniform3fv(uKs, 1, glm::value_ptr(white));
         glUniform1f(uShininess, shininess);
+        glUniform1i(uTexture, 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textos[0]);
         glDrawArrays(GL_TRIANGLES, 0, cylinder.getVertexCount());
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         glBindVertexArray(0);
 
